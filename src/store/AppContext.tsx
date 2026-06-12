@@ -18,6 +18,8 @@ export type Participant = {
 export type TransactionStatus = 'processed' | 'pending' | 'error'
 export type TransactionType = 'expense' | 'aporte'
 
+export type TransactionCategory = 'cafe' | 'almoco' | 'doacao' | null
+
 export type Transaction = {
   id: string
   participantId: string
@@ -27,6 +29,7 @@ export type Transaction = {
   origin: 'whatsapp' | 'manual'
   status: TransactionStatus
   type: TransactionType
+  category?: TransactionCategory
   rawMessage?: string
 }
 
