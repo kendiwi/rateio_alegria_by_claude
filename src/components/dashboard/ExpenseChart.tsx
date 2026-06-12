@@ -1,7 +1,6 @@
 import { useMemo } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { ChartContainer, ChartTooltip, ChartTooltipContent } from '@/components/ui/chart'
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer } from 'recharts'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, Tooltip } from 'recharts'
 import { useApp, GroupEvent } from '@/store/AppContext'
 import { formatCurrency } from '@/lib/utils'
 
@@ -15,7 +14,8 @@ export function ExpenseChart({ event }: { event: GroupEvent }) {
         const spent = event.transactions
           .filter((t) => t.participantId === id && t.status === 'processed' && t.type === 'expense')
           .reduce((acc, t) => acc + t.amount, 0)
-        return { name: p?.name || '?', value: spent }
+        const firstName = p?.name?.split(' ')[0] || '?'
+        return { name: firstName, full: p?.name || '?', value: spent }
       })
       .filter((d) => d.value > 0)
       .sort((a, b) => b.value - a.value)
@@ -33,29 +33,24 @@ export function ExpenseChart({ event }: { event: GroupEvent }) {
           </div>
         ) : (
           <div className="h-[250px] w-full">
-            <ChartContainer config={{ value: { label: 'Gasto', color: 'hsl(var(--primary))' } }}>
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                  <CartesianGrid
-                    strokeDasharray="3 3"
-                    vertical={false}
-                    stroke="hsl(var(--border))"
-                  />
-                  <XAxis dataKey="name" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis
-                    fontSize={12}
-                    tickLine={false}
-                    axisLine={false}
-                    tickFormatter={(val) => `R$ ${val}`}
-                  />
-                  <ChartTooltip
-                    cursor={{ fill: 'var(--muted)' }}
-                    content={<ChartTooltipContent formatter={(v: number) => formatCurrency(v)} />}
-                  />
-                  <Bar dataKey="value" fill="var(--color-value)" radius={[4, 4, 0, 0]} />
-                </BarChart>
-              </ResponsiveContainer>
-            </ChartContainer>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={data} margin={{ top: 10, right: 10, left: 10, bottom: 0 }}>
+                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                <XAxis dataKey="name" fontSize={11} tickLine={false} axisLine={false} />
+                <YAxis
+                  fontSize={11}
+                  tickLine={false}
+                  axisLine={false}
+                  tickFormatter={(v) => `R$${v}`}
+                  width={55}
+                />
+                <Tooltip
+                  formatter={(v: number, _: string, entry: any) => [formatCurrency(v), entry.payload.full]}
+                  contentStyle={{ fontSize: 12, borderRadius: 8, border: '1px solid #e2e8f0' }}
+                />
+                <Bar dataKey="value" fill="#6366f1" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
           </div>
         )}
       </CardContent>
