@@ -104,7 +104,7 @@ const DEFAULT_PARTICIPANTS: Participant[] = [
   { name: 'Cecilia Goto',        phone: '(11) 98585-0769', role: 'membro',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
   { name: 'Charles Macedo',      phone: '(11) 95358-1821', role: 'membro',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
   { name: 'Danielle Goto',       phone: '(11) 98174-5686', role: 'membro',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
-  { name: 'Denise Alessandra',   phone: '(11) 93147-4581', role: 'avulso',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
+  { name: 'Denise Alessandra',   phone: '(11) 93147-4581', role: 'avulso',  is_active: false, cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
   { name: 'Jackeline Katayose',  phone: '(11) 98756-0092', role: 'avulso',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
   { name: 'Jessica Katayose',    phone: '(11) 98428-4233', role: 'membro',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
   { name: 'Jorge Goto',          phone: '(11) 97337-3054', role: 'membro',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
@@ -115,9 +115,10 @@ const DEFAULT_PARTICIPANTS: Participant[] = [
   { name: 'Lucia Watanabe',      phone: '(11) 97175-6740', role: 'membro',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
   { name: 'Paulo Ohori',         phone: '(11) 95330-8957', role: 'membro',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
   { name: 'Shizu Ohori',         phone: '(11) 97047-2499', role: 'membro',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
-  { name: 'Tadayoshi Sameshima', phone: '(11) 97139-7865', role: 'membro',  is_active: false, cafe: false, almoco: true,  doacao: true,  photo_url: '' },
+  { name: 'Tadayoshi Sameshima', phone: '(11) 97139-7865', role: 'membro',  is_active: true,  cafe: false, almoco: true,  doacao: true,  photo_url: '' },
   { name: 'Thiago Goto',         phone: '(11) 98607-0082', role: 'membro',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
-  { name: 'Yara Guim',           phone: '(11) 98678-2510', role: 'avulso',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
+  { name: 'Yara Guim',           phone: '(11) 98678-2510', role: 'avulso',  is_active: false, cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
+  { name: 'Mori',                phone: '',                 role: 'avulso',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
 ].map(p => ({ ...p, id: crypto.randomUUID() }))
 
 const loadState = <T,>(k: string, def: T): T => {
