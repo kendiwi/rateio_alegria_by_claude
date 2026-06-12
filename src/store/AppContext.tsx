@@ -142,7 +142,10 @@ const saveState = (k: string, v: unknown) => {
 const AppContext = createContext<AppState | undefined>(undefined)
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [participants, setParticipants] = useState<Participant[]>(() => loadState('participants', DEFAULT_PARTICIPANTS))
+  const [participants, setParticipants] = useState<Participant[]>(() => {
+    const saved = loadState<Participant[]>('participants', [])
+    return saved.length > 0 ? saved : DEFAULT_PARTICIPANTS
+  })
   const [donations, setDonations] = useState<Donation[]>(() => loadState('donations', []))
   const [globalCaixaBalance, setGlobalCaixaBalance] = useState<number>(() => loadState('globalCaixaBalance', 0))
   const [activeEvent, setActiveEvent] = useState<GroupEvent | null>(() => loadState('activeEvent', null))
