@@ -39,10 +39,12 @@ export default function Expenses() {
   const { activeEvent, participants, addTransaction, deleteTransaction } = useApp()
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [type, setType] = useState<TransactionType>('expense')
-  const [category, setCategory] = useState<TransactionCategory>(null)
+  const [categoryStr, setCategoryStr] = useState<string>('none')
   const [participantId, setParticipantId] = useState('')
   const [description, setDescription] = useState('')
   const [amount, setAmount] = useState('')
+
+  const category: TransactionCategory = (categoryStr === 'none' ? null : categoryStr) as TransactionCategory
 
   if (!activeEvent) {
     return (
@@ -76,11 +78,11 @@ export default function Expenses() {
       status: 'processed',
     })
     toast.success(type === 'expense' ? 'Despesa registrada!' : 'Aporte registrado!')
-    setParticipantId(''); setDescription(''); setAmount(''); setCategory(null); setIsModalOpen(false)
+    setParticipantId(''); setDescription(''); setAmount(''); setCategoryStr('none'); setIsModalOpen(false)
   }
 
   const openModal = () => {
-    setType('expense'); setCategory(null); setParticipantId(''); setDescription(''); setAmount('')
+    setType('expense'); setCategoryStr('none'); setParticipantId(''); setDescription(''); setAmount('')
     setIsModalOpen(true)
   }
 
@@ -196,7 +198,7 @@ export default function Expenses() {
           <form onSubmit={handleSubmit} className="space-y-4 py-2">
             <div className="space-y-2">
               <Label>Tipo</Label>
-              <Select value={type} onValueChange={val => { setType(val as TransactionType); setCategory(null); setParticipantId('') }}>
+              <Select value={type} onValueChange={val => { setType(val as TransactionType); setCategoryStr('none'); setParticipantId('') }}>
                 <SelectTrigger><SelectValue /></SelectTrigger>
                 <SelectContent>
                   <SelectItem value="expense">Despesa</SelectItem>
@@ -208,10 +210,10 @@ export default function Expenses() {
             {type === 'expense' && (
               <div className="space-y-2">
                 <Label>Categoria</Label>
-                <Select value={category ?? ''} onValueChange={val => setCategory((val || null) as TransactionCategory)}>
+                <Select value={categoryStr} onValueChange={setCategoryStr}>
                   <SelectTrigger><SelectValue placeholder="Sem categoria" /></SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">Sem categoria</SelectItem>
+                    <SelectItem value="none">Sem categoria</SelectItem>
                     <SelectItem value="cafe">Café da Manhã</SelectItem>
                     <SelectItem value="almoco">Almoço</SelectItem>
                     <SelectItem value="doacao">Doação</SelectItem>
