@@ -16,31 +16,65 @@ import { Label } from '@/components/ui/label'
 function ParticipationToggles({ p, onToggle }: { p: Participant; onToggle: (field: 'cafe' | 'almoco' | 'doacao', val: boolean) => void }) {
   if (p.role === 'doador') return null
   return (
-    <div className="flex items-center gap-3 mt-2 pt-2 border-t border-slate-100">
+    <div className="flex items-center gap-2 mt-2 pt-2 border-t border-slate-100">
       <button
         onClick={() => onToggle('cafe', !p.cafe)}
-        className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-colors ${p.cafe ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-400 line-through'}`}
-        title="Café da manhã"
+        className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium transition-colors ${p.cafe ? 'bg-amber-100 text-amber-700' : 'bg-slate-100 text-slate-400'}`}
       >
         <Coffee className="h-3 w-3" /> Café
       </button>
       <button
         onClick={() => onToggle('almoco', !p.almoco)}
-        className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-colors ${p.almoco ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-400 line-through'}`}
-        title="Almoço"
+        className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium transition-colors ${p.almoco ? 'bg-blue-100 text-blue-700' : 'bg-slate-100 text-slate-400'}`}
       >
         <Utensils className="h-3 w-3" /> Almoço
       </button>
       <button
         onClick={() => onToggle('doacao', !p.doacao)}
-        className={`flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium transition-colors ${p.doacao ? 'bg-pink-100 text-pink-700' : 'bg-slate-100 text-slate-400 line-through'}`}
-        title="Doação"
+        className={`flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium transition-colors ${p.doacao ? 'bg-pink-100 text-pink-700' : 'bg-slate-100 text-slate-400'}`}
       >
         <Heart className="h-3 w-3" /> Doação
       </button>
     </div>
   )
 }
+
+function ParticipantCard({ p, onToggle, onToggleStatus, onDelete }: {
+  p: Participant
+  onToggle: (field: 'cafe' | 'almoco' | 'doacao', val: boolean) => void
+  onToggleStatus: () => void
+  onDelete: () => void
+}) {
+  return (
+    <Card className={`overflow-hidden transition-all duration-200 ${!p.is_active ? 'opacity-60 bg-slate-50' : 'bg-white hover:shadow-md'}`}>
+      <CardContent className="p-4">
+        <div className="flex items-center gap-3">
+          <Avatar className="h-11 w-11 border-2 border-slate-100 shadow-sm shrink-0">
+            <AvatarImage src={p.photo_url} />
+            <AvatarFallback className="bg-slate-200 text-slate-700 font-bold">{p.name.substring(0, 2).toUpperCase()}</AvatarFallback>
+          </Avatar>
+          <div className="flex-1 min-w-0">
+            <span className="font-semibold text-slate-800 truncate block">{p.name}</span>
+            <div className="mt-0.5"><RoleTag role={p.role} className="scale-90 origin-left" /></div>
+          </div>
+          <div className="flex flex-col items-end gap-1.5 shrink-0">
+            <Switch checked={p.is_active} onCheckedChange={onToggleStatus} title={p.is_active ? 'Desativar' : 'Ativar'} />
+            <Button variant="ghost" size="icon" className="h-7 w-7 text-slate-400 hover:text-red-500" onClick={onDelete}>
+              <Trash2 className="h-3.5 w-3.5" />
+            </Button>
+          </div>
+        </div>
+        <ParticipationToggles p={p} onToggle={onToggle} />
+      </CardContent>
+    </Card>
+  )
+}
+
+const SECTIONS = [
+  { label: 'Membros Fixos', sublabel: 'Taxa fixa + rateio por categoria', role: 'membro' as ParticipantRole, color: 'text-indigo-700 border-indigo-200' },
+  { label: 'Avulsos', sublabel: 'Só rateio por categoria, sem taxa fixa', role: 'avulso' as ParticipantRole, color: 'text-violet-700 border-violet-200' },
+  { label: 'Apenas Doadores', sublabel: 'Não participam do rateio', role: 'doador' as ParticipantRole, color: 'text-pink-700 border-pink-200' },
+]
 
 export default function Participants() {
   const { participants, addParticipant, updateParticipant, toggleParticipantStatus, deleteParticipant } = useApp()
@@ -56,16 +90,12 @@ export default function Participants() {
     if (!name) { toast.error('O nome é obrigatório.'); return }
     try {
       await addParticipant({
-        name,
-        role,
-        is_active: true,
-        phone: '',
-        photo_url: '',
+        name, role, is_active: true, phone: '', photo_url: '',
         cafe: role === 'doador' ? false : newCafe,
         almoco: role === 'doador' ? false : newAlmoco,
         doacao: role === 'doador' ? true : newDoacao,
       })
-      toast.success('Participante adicionado com sucesso!')
+      toast.success('Participante adicionado!')
       setIsAddModalOpen(false)
       setName(''); setRole('membro'); setNewCafe(true); setNewAlmoco(true); setNewDoacao(false)
     } catch {
@@ -77,17 +107,13 @@ export default function Participants() {
     updateParticipant(id, { [field]: val })
   }
 
-  // Counts for summary
   const active = participants.filter(p => p.is_active)
-  const membros = active.filter(p => p.role === 'membro')
-  const avulsos = active.filter(p => p.role === 'avulso')
-  const doadores = active.filter(p => p.role === 'doador')
   const cafeCount = active.filter(p => p.role !== 'doador' && p.cafe).length
   const almocoCount = active.filter(p => p.role !== 'doador' && p.almoco).length
   const doacaoCount = active.filter(p => p.role !== 'doador' && p.doacao).length
 
   return (
-    <div className="space-y-6 animate-fade-in-up">
+    <div className="space-y-8 animate-fade-in-up">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-slate-900">Participantes</h1>
@@ -149,46 +175,41 @@ export default function Participants() {
       </div>
 
       {/* Summary chips */}
-      <div className="flex flex-wrap gap-3 text-sm">
-        <span className="px-3 py-1 rounded-full bg-indigo-100 text-indigo-700 font-medium">{membros.length} membros fixos</span>
-        <span className="px-3 py-1 rounded-full bg-violet-100 text-violet-700 font-medium">{avulsos.length} avulsos</span>
-        {doadores.length > 0 && <span className="px-3 py-1 rounded-full bg-pink-100 text-pink-700 font-medium">{doadores.length} doadores</span>}
-        <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-700 font-medium"><Coffee className="inline h-3 w-3 mr-1" />{cafeCount} no café</span>
-        <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 font-medium"><Utensils className="inline h-3 w-3 mr-1" />{almocoCount} no almoço</span>
-        <span className="px-3 py-1 rounded-full bg-pink-100 text-pink-700 font-medium"><Heart className="inline h-3 w-3 mr-1" />{doacaoCount} na doação</span>
+      <div className="flex flex-wrap gap-2 text-sm">
+        <span className="px-3 py-1 rounded-full bg-amber-100 text-amber-700 font-medium inline-flex items-center gap-1"><Coffee className="h-3 w-3" />{cafeCount} no café</span>
+        <span className="px-3 py-1 rounded-full bg-blue-100 text-blue-700 font-medium inline-flex items-center gap-1"><Utensils className="h-3 w-3" />{almocoCount} no almoço</span>
+        <span className="px-3 py-1 rounded-full bg-pink-100 text-pink-700 font-medium inline-flex items-center gap-1"><Heart className="h-3 w-3" />{doacaoCount} na doação</span>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {participants.map(p => (
-          <Card key={p.id} className={`overflow-hidden transition-all duration-200 ${!p.is_active ? 'opacity-60 bg-slate-50' : 'bg-white hover:shadow-md'}`}>
-            <CardContent className="p-4">
-              <div className="flex items-center gap-3">
-                <Avatar className="h-11 w-11 border-2 border-slate-100 shadow-sm shrink-0">
-                  <AvatarImage src={p.photo_url} />
-                  <AvatarFallback className="bg-slate-200 text-slate-700 font-bold">{p.name.substring(0, 2).toUpperCase()}</AvatarFallback>
-                </Avatar>
-                <div className="flex-1 min-w-0">
-                  <span className="font-semibold text-slate-800 truncate block">{p.name}</span>
-                  <div className="mt-0.5"><RoleTag role={p.role} className="scale-90 origin-left" /></div>
-                </div>
-                <div className="flex flex-col items-end gap-1.5 shrink-0">
-                  <Switch checked={p.is_active} onCheckedChange={() => toggleParticipantStatus(p.id)} title={p.is_active ? 'Desativar' : 'Ativar'} />
-                  <Button variant="ghost" size="icon" className="h-7 w-7 text-slate-400 hover:text-red-500"
-                    onClick={() => { if (confirm(`Deseja remover ${p.name}?`)) deleteParticipant(p.id) }}>
-                    <Trash2 className="h-3.5 w-3.5" />
-                  </Button>
-                </div>
-              </div>
-              <ParticipationToggles p={p} onToggle={(field, val) => handleToggle(p.id, field, val)} />
-            </CardContent>
-          </Card>
-        ))}
-        {participants.length === 0 && (
-          <div className="col-span-full py-12 text-center text-slate-500 border-2 border-dashed rounded-xl bg-slate-50">
-            Nenhum participante cadastrado.
+      {SECTIONS.map(section => {
+        const group = participants.filter(p => p.role === section.role)
+        if (group.length === 0) return null
+        return (
+          <div key={section.role} className="space-y-3">
+            <div className={`border-b pb-2 ${section.color}`}>
+              <h2 className="font-semibold text-base">{section.label} <span className="font-normal text-sm opacity-70">({group.length})</span></h2>
+              <p className="text-xs opacity-60">{section.sublabel}</p>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {group.map(p => (
+                <ParticipantCard
+                  key={p.id}
+                  p={p}
+                  onToggle={(field, val) => handleToggle(p.id, field, val)}
+                  onToggleStatus={() => toggleParticipantStatus(p.id)}
+                  onDelete={() => { if (confirm(`Deseja remover ${p.name}?`)) deleteParticipant(p.id) }}
+                />
+              ))}
+            </div>
           </div>
-        )}
-      </div>
+        )
+      })}
+
+      {participants.length === 0 && (
+        <div className="py-12 text-center text-slate-500 border-2 border-dashed rounded-xl bg-slate-50">
+          Nenhum participante cadastrado.
+        </div>
+      )}
     </div>
   )
 }
