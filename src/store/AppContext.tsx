@@ -98,6 +98,28 @@ interface AppState {
 
 const STORAGE_PREFIX = 'rateio_alegria_'
 
+const DEFAULT_PARTICIPANTS: Participant[] = [
+  { name: 'Aurelia Yuliko',      phone: '(11) 99908-6725', role: 'membro',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
+  { name: 'Beatriz',             phone: '(11) 94994-2220', role: 'avulso',  is_active: false, cafe: false, almoco: false, doacao: false, photo_url: '' },
+  { name: 'Cecilia Goto',        phone: '(11) 98585-0769', role: 'membro',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
+  { name: 'Charles Macedo',      phone: '(11) 95358-1821', role: 'membro',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
+  { name: 'Danielle Goto',       phone: '(11) 98174-5686', role: 'membro',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
+  { name: 'Denise Alessandra',   phone: '(11) 93147-4581', role: 'avulso',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
+  { name: 'Jackeline Katayose',  phone: '(11) 98756-0092', role: 'avulso',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
+  { name: 'Jessica Katayose',    phone: '(11) 98428-4233', role: 'membro',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
+  { name: 'Jorge Goto',          phone: '(11) 97337-3054', role: 'membro',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
+  { name: 'Kendi Goto',          phone: '(11) 98500-9877', role: 'membro',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
+  { name: 'Larissa Ohori',       phone: '(11) 98255-9409', role: 'membro',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
+  { name: 'Lucas Minoru',        phone: '(11) 96666-4618', role: 'membro',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
+  { name: 'Lucas Ohori',         phone: '(11) 99273-3234', role: 'membro',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
+  { name: 'Lucia Watanabe',      phone: '(11) 97175-6740', role: 'membro',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
+  { name: 'Paulo Ohori',         phone: '(11) 95330-8957', role: 'membro',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
+  { name: 'Shizu Ohori',         phone: '(11) 97047-2499', role: 'membro',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
+  { name: 'Tadayoshi Sameshima', phone: '(11) 97139-7865', role: 'membro',  is_active: false, cafe: false, almoco: true,  doacao: true,  photo_url: '' },
+  { name: 'Thiago Goto',         phone: '(11) 98607-0082', role: 'membro',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
+  { name: 'Yara Guim',           phone: '(11) 98678-2510', role: 'avulso',  is_active: true,  cafe: true,  almoco: true,  doacao: true,  photo_url: '' },
+].map(p => ({ ...p, id: crypto.randomUUID() }))
+
 const loadState = <T,>(k: string, def: T): T => {
   try {
     const s = localStorage.getItem(STORAGE_PREFIX + k)
@@ -120,7 +142,7 @@ const saveState = (k: string, v: unknown) => {
 const AppContext = createContext<AppState | undefined>(undefined)
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [participants, setParticipants] = useState<Participant[]>(() => loadState('participants', []))
+  const [participants, setParticipants] = useState<Participant[]>(() => loadState('participants', DEFAULT_PARTICIPANTS))
   const [donations, setDonations] = useState<Donation[]>(() => loadState('donations', []))
   const [globalCaixaBalance, setGlobalCaixaBalance] = useState<number>(() => loadState('globalCaixaBalance', 0))
   const [activeEvent, setActiveEvent] = useState<GroupEvent | null>(() => loadState('activeEvent', null))
