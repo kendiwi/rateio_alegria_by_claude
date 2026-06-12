@@ -191,22 +191,17 @@ export default function Settlement() {
                     <th className="px-4 py-3 font-medium text-pink-600 text-right">Doação</th>
                     <th className="px-4 py-3 font-medium text-slate-600 text-right">Taxa</th>
                     <th className="px-4 py-3 font-medium text-red-600 text-right">T.Desp</th>
-                    <th className="px-4 py-3 font-medium text-green-600 text-right">T.Pago</th>
+                    <th className="px-4 py-3 font-medium text-green-600 text-right" title="Total gasto pelo participante">T.Gasto</th>
                     <th className="px-4 py-3 font-medium text-slate-800 text-right">Final</th>
                   </tr>
                 </thead>
                 <tbody>
                   {settlement.balances.map(b => {
-                    const aportes = activeEvent.transactions
-                      .filter(t => t.type === 'aporte' && t.participantId === b.id && t.status !== 'error')
-                      .reduce((s, t) => s + t.amount, 0)
-
                     const cafeShare = b.isParticipant && b.cafe && cafeCount > 0 ? (totalCafe * (1 - subFrac)) / cafeCount : null
                     const almocoShare = b.isParticipant && b.almoco && almocoCount > 0 ? (totalAlmoco * (1 - subFrac)) / almocoCount : null
                     const doacaoShare = b.isParticipant && b.doacao && doacaoCount > 0 ? (totalDoacao * (1 - subFrac)) / doacaoCount : null
 
                     const totalDebt = b.shareOfExpenses + (b.fixedFee || 0)
-                    const finalBalance = aportes - totalDebt
 
                     return (
                       <tr key={b.id} className="border-b last:border-0 hover:bg-slate-50">
@@ -236,11 +231,11 @@ export default function Settlement() {
                           {totalDebt > 0 ? formatCurrency(totalDebt) : <span className="text-slate-300">—</span>}
                         </td>
                         <td className="px-4 py-3 text-right font-semibold text-green-600">
-                          {aportes > 0 ? formatCurrency(aportes) : <span className="text-slate-300">—</span>}
+                          {b.spent > 0 ? formatCurrency(b.spent) : <span className="text-slate-300">—</span>}
                         </td>
                         <td className="px-4 py-3 text-right">
-                          <span className={`font-bold ${finalBalance > 0.01 ? 'text-green-600' : finalBalance < -0.01 ? 'text-red-600' : 'text-slate-500'}`}>
-                            {finalBalance > 0.01 ? '+' : ''}{formatCurrency(finalBalance)}
+                          <span className={`font-bold ${b.finalBalance > 0.01 ? 'text-green-600' : b.finalBalance < -0.01 ? 'text-red-600' : 'text-slate-500'}`}>
+                            {b.finalBalance > 0.01 ? '+' : ''}{formatCurrency(b.finalBalance)}
                           </span>
                         </td>
                       </tr>
