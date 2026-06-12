@@ -42,7 +42,7 @@ export function EventSummaryModal({ event, open, onOpenChange, trigger }: Props)
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {trigger && <DialogTrigger asChild>{trigger}</DialogTrigger>}
-      <DialogContent className="sm:max-w-[450px]">
+      <DialogContent className="sm:max-w-[750px] max-h-[90vh]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Share2 className="h-5 w-5 text-[#25D366]" /> Resumo para WhatsApp
@@ -50,7 +50,7 @@ export function EventSummaryModal({ event, open, onOpenChange, trigger }: Props)
         </DialogHeader>
 
         <div className="py-2">
-          <ScrollArea className="h-[320px] w-full rounded-md border border-slate-200 bg-slate-50 p-4 shadow-inner">
+          <ScrollArea className="h-[60vh] w-full rounded-md border border-slate-200 bg-slate-50 p-4 shadow-inner">
             <pre className="text-sm whitespace-pre-wrap font-sans text-slate-700 leading-relaxed">
               {text}
             </pre>

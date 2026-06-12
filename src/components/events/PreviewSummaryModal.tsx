@@ -104,7 +104,7 @@ export function PreviewSummaryModal() {
           <span className="sm:hidden">Pré-visualizar</span>
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[750px] max-h-[90vh]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2 text-xl">
             <Eye className="h-5 w-5 text-slate-500" /> Prévia do Resumo
@@ -112,7 +112,7 @@ export function PreviewSummaryModal() {
         </DialogHeader>
 
         <div className="py-2">
-          <ScrollArea className="h-[380px] w-full rounded-md border border-slate-200 bg-slate-50 p-4 shadow-inner">
+          <ScrollArea className="h-[60vh] w-full rounded-md border border-slate-200 bg-slate-50 p-4 shadow-inner">
             <pre className="text-sm whitespace-pre-wrap font-sans text-slate-700 leading-relaxed">
               {text}
             </pre>
