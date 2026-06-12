@@ -58,10 +58,9 @@ export default function Expenses() {
   }
 
   const activeParticipants = participants.filter(p => activeEvent.participantIds.includes(p.id))
-  const filteredParticipants = activeParticipants.filter(p => {
-    if (type === 'expense') return p.role === 'membro' || p.role === 'avulso'
-    return true
-  })
+  const filteredParticipants = type === 'expense'
+    ? activeParticipants.filter(p => p.role === 'membro' || p.role === 'avulso')
+    : participants.filter(p => p.is_active)
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
