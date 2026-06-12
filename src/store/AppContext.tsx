@@ -147,7 +147,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return saved.length > 0 ? saved : DEFAULT_PARTICIPANTS
   })
   const [donations, setDonations] = useState<Donation[]>(() => loadState('donations', []))
-  const [globalCaixaBalance, setGlobalCaixaBalance] = useState<number>(() => loadState('globalCaixaBalance', 0))
+  const [globalCaixaBalance, setGlobalCaixaBalance] = useState<number>(() => loadState('globalCaixaBalance', 2054.61))
   const [activeEvent, setActiveEvent] = useState<GroupEvent | null>(() => loadState('activeEvent', null))
   const [pastEvents, setPastEvents] = useState<GroupEvent[]>(() => loadState('pastEvents', []))
 
