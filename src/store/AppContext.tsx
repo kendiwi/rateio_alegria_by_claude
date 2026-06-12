@@ -54,8 +54,13 @@ export type GroupEvent = {
     balances: Array<{
       id: string
       name: string
+      role?: string
       spent: number
       fixedFee?: number
+      shareOfExpenses?: number
+      cafeShare?: number
+      almocoShare?: number
+      doacaoShare?: number
       finalBalance: number
       subCredit: number
     }>

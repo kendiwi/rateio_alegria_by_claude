@@ -118,6 +118,11 @@ export function calculateSettlement(data: SettlementBaseData) {
 
       const finalBalance = spent - shareOfExpenses - fixedFee
 
+      const pCafeShare = isParticipant && p.cafe ? cafeAvg : 0
+      const pAlmocoShare = isParticipant && p.almoco ? almocoAvg : 0
+      const pDoacaoShare = isParticipant && p.doacao ? doacaoAvg : 0
+      const pGeneralShare = isParticipant ? generalAvg : 0
+
       return {
         ...p,
         isParticipant,
@@ -125,6 +130,10 @@ export function calculateSettlement(data: SettlementBaseData) {
         fixedFee,
         shareOfExpenses,
         categoriesParticipated,
+        cafeShare: pCafeShare,
+        almocoShare: pAlmocoShare,
+        doacaoShare: pDoacaoShare,
+        generalShare: pGeneralShare,
         spent,
         finalBalance: isNaN(finalBalance) ? 0 : finalBalance,
         subCredit: isParticipant ? subPerPerson : 0,

@@ -48,8 +48,13 @@ export function PreviewSummaryModal() {
           balances: res.balances.map((b) => ({
             id: b.id,
             name: b.name,
+            role: b.role,
             spent: b.spent,
             fixedFee: b.fixedFee,
+            shareOfExpenses: b.shareOfExpenses,
+            cafeShare: b.cafeShare,
+            almocoShare: b.almocoShare,
+            doacaoShare: b.doacaoShare,
             finalBalance: b.finalBalance,
             subCredit: b.subCredit,
           })),
